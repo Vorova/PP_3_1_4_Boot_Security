@@ -24,7 +24,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/index").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .permitAll()
@@ -44,6 +44,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         .roles("USER")
                         .build();
 
-        return new InMemoryUserDetailsManager(user);
+        UserDetails admin =
+                User.withDefaultPasswordEncoder()
+                        .username("admin")
+                        .password("admin")
+                        .roles("ADMIN")
+                        .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
     }
 }

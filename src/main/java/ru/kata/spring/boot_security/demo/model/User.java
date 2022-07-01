@@ -1,9 +1,14 @@
 package ru.kata.spring.boot_security.demo.model;
 
-import javax.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "users")
 public class User {
 
@@ -17,31 +22,12 @@ public class User {
     @Column
     private String email;
 
-    public User() {}
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @OneToMany()
+    @JoinTable(name = "roles_users",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> role;
 
     @Override
     public String toString() {
