@@ -1,0 +1,41 @@
+<div th:fragment="all_users (users)">
+    <div class="container p-3 border" >
+        <p class="h5">All users</p>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Role</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user: ${users}">
+            <th scope="row" th:text="${user.id}">1</th>
+            <td th:text="${user.username}">Mark</td>
+            <td th:text="${user.email}">Otto</td>
+            <td>
+                <b th:each="role: ${user.roles}">
+                    <span th:text="${role.authority.substring(5)} + ' '"></span>
+                </b>
+            </td>
+            <td>
+                <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#editModal"
+                        th:data-user-id="${user.id}"
+                >Edit</button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

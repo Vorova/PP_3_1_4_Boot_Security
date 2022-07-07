@@ -8,13 +8,10 @@ import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
-public class UserServiceImp implements UserService{
+public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
 
@@ -37,7 +34,7 @@ public class UserServiceImp implements UserService{
         roleRepository.save(roleUser);
         roleRepository.save(roleAdmin);
 
-        List<Role> listRole = new ArrayList<>();
+        Set<Role> listRole = new HashSet<>();
         listRole.add(roleAdmin);
 
         User user = new User();
@@ -49,14 +46,17 @@ public class UserServiceImp implements UserService{
     }
 
     @Override
-    public Iterable<User> allUsers() {
+    public List<User> allUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public void save(User user) {
-        List<Role> listRole = new ArrayList<>();
-        listRole.add(new Role(1L, "ROLE_USER"));
+    public void save(User user, Long[] roles) {
+        Set<Role> listRole = new HashSet<>();
+
+        for (Long role : roles) {
+            listRole.add(roleRepository.findRoleById(role));
+        }
 
         user.setRoles(listRole);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -66,10 +66,7 @@ public class UserServiceImp implements UserService{
 
     @Override
     public void update(User user) {
-        User userFromDb = userRepository.getById(user.getId());
-        userFromDb.setUsername(user.getUsername());
-        userFromDb.setEmail(user.getEmail());
-        userRepository.save(userFromDb);
+        userRepository.save(user);
     }
 
     @Override
@@ -86,12 +83,6 @@ public class UserServiceImp implements UserService{
     @Override
     public User getByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            return null;
-        }
-
-
+        return user.orElse(null);
     }
 }
