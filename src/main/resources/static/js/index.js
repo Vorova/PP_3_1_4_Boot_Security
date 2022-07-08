@@ -56,7 +56,6 @@ async function getUser(id) {
 async function editUser() {
     let editForm = document.getElementById("editForm");
     let formData = new FormData(editForm);
-
     let user = {
         id: formData.get('id'),
         username: formData.get('username'),
