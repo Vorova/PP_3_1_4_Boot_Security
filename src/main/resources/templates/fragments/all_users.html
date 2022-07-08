@@ -14,11 +14,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user: ${users}">
-            <th scope="row" th:text="${user.id}">1</th>
-            <td th:text="${user.username}">Mark</td>
-            <td th:text="${user.email}">Otto</td>
-            <td>
+        <tr th:each="user: ${users}" th:data-user="${user.id}">
+            <th scope="row" th:text="${user.id}" th:data-user-id="${user.id}">1</th>
+            <td th:text="${user.username}" th:data-user-username="${user.id}">Mark</td>
+            <td th:text="${user.email}" th:data-user-email="${user.id}">Otto</td>
+            <td th:data-user-roles="${user.id}">
                 <b th:each="role: ${user.roles}">
                     <span th:text="${role.authority.substring(5)} + ' '"></span>
                 </b>

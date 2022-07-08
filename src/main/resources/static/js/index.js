@@ -63,7 +63,7 @@ async function editUser() {
         email: formData.get('email'),
         roles: Array.from(document.getElementById("editRoles"))
             .filter(option => option.selected)
-            .map(option => ({id: option.value}))
+            .map(option => ({id: option.value, authority: option.text}))
     }
 
     fetch(API + "/updateUser", {
@@ -75,11 +75,24 @@ async function editUser() {
         body: JSON.stringify(user)
     })
     .then(() => {
-        location.reload();
+        // Close modal
+        $('#editModal .btn-close').click();
+
+        // Update data
+        let tdId = document.querySelector("[data-user-id=\"" + user.id + "\"]");
+        let tdUsername = document.querySelector("[data-user-username=\"" + user.id + "\"]");
+        let tdEmail = document.querySelector("[data-user-email=\"" + user.id + "\"]");
+        let tdRoles = document.querySelector("[data-user-roles=\"" + user.id + "\"]");
+        tdId.innerHTML = `${user.id}`;
+        tdUsername.innerHTML = `${user.username}`;
+        tdEmail.innerHTML = `${user.email}`;
+        let tdRolesText = ``;
+        user.roles.forEach(role => {
+            tdRolesText += `<b><span>${role.authority} </span></b>`
+        });
+        tdRoles.innerHTML = tdRolesText;
     })
 
-    // todo Закрыть модальное окно
-    // todo Обновить данные в строке с пользователем
 }
 
 async function deleteUser() {
@@ -97,9 +110,8 @@ async function deleteUser() {
         body: JSON.stringify(id)
     })
     .then(() => {
-        location.reload();
+        $('#deleteModal .btn-close').click();
+        let tr = document.querySelector("[data-user=\"" + id + "\"]");
+        tr.remove();
     })
-
-    // todo Закрыть модальное окно
-    // todo Обновить данные в таблице пользователей
 }
